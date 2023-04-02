@@ -56,7 +56,7 @@ $(green '4)') pnpm and node
 $(green '5)') Popular Bin Installs
 $(green '0)') Exit
 $(blue 'Choose an option:') "
-        read a
+        read a </dev/tty
         case $a in
 	        1) install-bin-dirs ; clear; splash; menu ;;
 	        2) install-chezmoi ; clear; splash; menu ;;
@@ -75,7 +75,7 @@ $(green '1)') Github CLI - github.com/cli/cli
 $(green '2)') Direnv - github.com/direnv/direnv
 $(green '0)') Return
 $(blue 'Choose an option:') "
-        read a
+        read a </dev/tty
         case $a in
 	        1) bin install github.com/cli/cli ; clear; splash; menu-bin-apps ;;
 	        2) bin install github.com/direnv/direnv ; clear; splash; menu-bin-apps ;;
@@ -119,13 +119,13 @@ install-bin-dirs() {
   mkdir -p "$HOME/.local/bin"
   add-to-config ~/.bashrc 'export PATH="$HOME/.local/bin:$PATH"'
   add-to-path "$HOME/.local/bin"
-  read -n 1 -s -r -p "*** Bin dirs are installed, press any key"
+  read -n 1 -s -r -p "*** Bin dirs are installed, press any key" </dev/tty
 }
 
 install-chezmoi() {
   sh -c "$(curl -fsLS git.io/chezmoi)"
   # sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply dieddc 
-  read -n 1 -s -r -p "*** Chezmoi is installed, press any key" 
+  read -n 1 -s -r -p "*** Chezmoi is installed, press any key" </dev/tty 
 }
 
 install-bin-tool() {
@@ -138,7 +138,7 @@ install-bin-tool() {
   chmod u+x ./bintool
   ./bintool install github.com/marcosnils/bin
   rm ./bintool
-  read -n 1 -s -r -p "*** Bin tool is installed, press any key" 
+  read -n 1 -s -r -p "*** Bin tool is installed, press any key" </dev/tty
 }
 
 install-pnpm() {
@@ -150,7 +150,7 @@ install-pnpm() {
 
 function all() {
 
-  read -n 1 -s -r -p "*** Setup local bin and installing starship, press any key"
+  read -n 1 -s -r -p "*** Setup local bin and installing starship, press any key" </dev/tty
   echo ""
   echo "Getting starship..."
 
@@ -165,7 +165,7 @@ function all() {
   eval "$(starship init bash)"
 
   echo ""
-  read -n 1 -s -r -p "*** Setup bin install tool (github.com/marcosnils/bin), press any key"
+  read -n 1 -s -r -p "*** Setup bin install tool (github.com/marcosnils/bin), press any key" </dev/tty
 
   # Werken met bin install tool - https://github.com/marcosnils/bin
   VERSION=`curl -fsSL "https://api.github.com/repos/marcosnils/bin/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c2-`
@@ -179,7 +179,7 @@ function all() {
 
   # Installatie van NVM
   echo ""
-  read -n 1 -s -r -p "*** Installing NVM, press any key"
+  read -n 1 -s -r -p "*** Installing NVM, press any key" </dev/tty
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -191,7 +191,7 @@ function all() {
   bin install github.com/jakedeichert/mask
 
   echo ""
-  read -n 1 -s -r -p "*** All OK, press any key"
+  read -n 1 -s -r -p "*** All OK, press any key"  </dev/tty
   clear
 
   # Ophalen van markdown bootstrap om te draaien met mask
