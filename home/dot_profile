@@ -1,0 +1,35 @@
+# set global editor to nano
+export EDITOR=nano
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+# if running bash, bash do not run bashrc on login shell, see https://tanguy.ortolo.eu/blog/article25/shrc
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+	. "$HOME/.bashrc"
+    fi
+fi
+
+# deno binaries goes to .deno
+if [ -d "${HOME}/.deno/bin" ]; then
+  export DENO_INSTALL="${HOME}/.deno"
+  export PATH="${DENO_INSTALL}/bin:${PATH}"
+fi
+
+# pnpm
+if [ -d "${HOME}/.local/share/pnpm" ]; then
+  export PNPM_HOME="/home/ubuntu/.local/share/pnpm"
+  case ":$PATH:" in
+    *":$PNPM_HOME:"*) ;;
+    *) export PATH="$PNPM_HOME:$PATH" ;;
+  esac
+fi

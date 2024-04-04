@@ -1,0 +1,6 @@
+# see https://www.zerotohero.dev/zshell-startup-files/
+
+# include .profile if it exists.
+if [ -f "$HOME/.profile" ]; then
+    . "$HOME/.profile"
+fi

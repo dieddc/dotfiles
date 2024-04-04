@@ -1,0 +1,13 @@
+
+# Prefering exa if installed
+if command -v exa >/dev/null 2>&1; then
+  alias ls='exa'                 # ls
+  alias l='exa -lbFa --git'      # list, size, type, git
+else
+  alias l='ls -lah'
+fi
+
+################################################################################
+# Not entering passphrase anymore
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
