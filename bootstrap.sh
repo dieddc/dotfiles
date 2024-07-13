@@ -190,7 +190,7 @@ add-user() {
   # Adding user and create home dir
   useradd --uid 1000 --gid ${USERNAME} --shell /bin/bash --create-home ${USERNAME}
   # add empty password to user
-  # passwd -d ${USERNAME}
+  passwd -d ${USERNAME}
   # Give user sudo rights
   echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME}
   chmod 0440 /etc/sudoers.d/${USERNAME}      
@@ -237,7 +237,7 @@ install-python() {
 
 }
 
-# Replacing sudo command for pre cheking if all is OK
+# Replacing sudo command for pre checking if all is OK
 sudo() {
   # shellcheck disable=SC2312
   if [ "$(id -u)" -eq 0 ]; then
@@ -251,7 +251,6 @@ sudo() {
   fi
 }
 
-
 install-zsh() {
 
   if ! command -v zsh &> /dev/null
@@ -262,9 +261,6 @@ install-zsh() {
 
   # Change shell of user
   sudo usermod --shell /bin/zsh $USERNAME
-
-  # Install OH-MY-ZSH
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
   DOTFILES_REPO_HOST=${DOTFILES_REPO_HOST:-"https://github.com"}
   DOTFILES_USER=${DOTFILES_USER:-"dieddc"}
@@ -286,8 +282,31 @@ install-zsh() {
     git clone --branch "${DOTFILES_BRANCH}" "${DOTFILES_REPO}" "${DOTFILES_DIR}"
   fi
 
-  clear
+  # Install OH-MY-ZSH
+  if [ -d ~/.oh-my-zsh ]; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  fi
+
+  if [ -d ~/oh-my-zsh/plugins/zsh-autosuggestions ]; then
+    cd ~/oh-my-zsh/plugins/zsh-autosuggestions && git pull
+  else
+    git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/oh-my-zsh/plugins/zsh-autosuggestions
+  fi
+
+  if [ -d ~/oh-my-zsh/custom/plugins/zsh-syntax-highlighting ]; then
+    cd ~/oh-my-zsh/custom/plugins/zsh-syntax-highlighting && git pull
+  else
+    git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+  fi
+
+  if [ -d ~/oh-my-zsh/custom/plugins/zsh-completions ]; then
+    cd ~/oh-my-zsh/custom/plugins/zsh-completions && git pull
+  else
+    git clone --depth=1 https://github.com/zsh-users/zsh-completions ~/oh-my-zsh/custom/plugins/zsh-completions
+  fi
+
   log-task "Zsh, Oh-my-zsh and Chezmoi dotfiles are installed, please restart session for activating the shell"
+
   wait-for-key
 
 }
