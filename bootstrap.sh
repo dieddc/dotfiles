@@ -125,6 +125,70 @@ add-dir() {
   fi    
 }
 
+check-user() {
+  USERNAME=${1%/}
+  if id $USERNAME >/dev/null 2>&1;
+  then
+    echo -e $green" Standard Development User $USERNAME exists"$clear
+    if [ "$USER" = "$USERNAME" ]; 
+    then 
+      echo -e " Running as $USERNAME, we can proceed..."
+    else  
+      echo -e $red" You are root, please run the bootstrap as user $USERNAME"$clear
+      exit 0
+    fi
+  else
+    echo -e $orange" We need to add the user $USERNAME"$clear
+    if [ $UID = 0 ];
+    then 
+      check-sudo
+      if getent passwd 1000 >/dev/null; 
+      then  
+        echo -e $red" USER ID 1000 is occupied"$clear
+        exit 0
+      fi    
+      add-user $USERNAME
+    else  
+      echo -e $red" Please start as ROOT for adding the user $USERNAME"$clear
+      exit 0
+    fi
+  fi    
+}
+
+# installeer basis, steeds controleren
+check-sudo() {
+  # We always need sudo
+  if ! command -v sudo &> /dev/null
+  then
+    read -n 1 -s -r -p "*** Performing apt update" </dev/tty 
+    apt-get update
+    clear
+    read -n 1 -s -r -p "*** sudo not found, will be installed" </dev/tty 
+    apt-get install --no-install-recommends -y sudo
+    clear
+  fi    
+}
+
+add-user() {
+  USERNAME=${1%/}
+  # Adding group with same name as user
+  groupadd --gid 1000 ${USERNAME}
+  # Adding user and create home dir
+  useradd --uid 1000 --gid ${USERNAME} --shell /bin/bash --create-home ${USERNAME}
+  # add empty password to user
+  passwd -d ${USERNAME}
+  # Give user sudo rights
+  echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME}
+  chmod 0440 /etc/sudoers.d/${USERNAME}      
+  # Adding a password for the user
+  echo -e $green" Please add a password for user $USERNAME..."$clear
+  passwd ${USERNAME}
+  # We need to restart as user
+  echo -e $green" Restart session as user $USERNAME"$clear
+  exit 0
+}
+
+
 install-base() {
 
   read -n 1 -s -r -p "*** Performing apt update" </dev/tty 
@@ -272,11 +336,8 @@ function all() {
 # Starting
 clear
 splash
+install-always
+check-user "ddc"
 menu
 # install-base
 
-# Test commands in LXC
-: '
-source ~/shared/bootstrap.sh 
-echo $PATH
-'
