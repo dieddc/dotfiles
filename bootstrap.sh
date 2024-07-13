@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export DEBIAN_FRONTEND=noninteractive
 # Ophalen via 
 # curl -fsSL "http://bootstrap.diederik.be?$(date +%s)" --output bootstrap.sh && . bootstrap.sh  
 
@@ -336,7 +337,6 @@ function all() {
 # Starting
 clear
 splash
-install-always
 check-user "ddc"
 menu
 # install-base
