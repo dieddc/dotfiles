@@ -273,7 +273,7 @@ install-zsh() {
   DOTFILES_DIR="${HOME}/.dotfiles"
 
   if ! command -v git >/dev/null 2>&1; then
-    log_task "Installing git"
+    log-task "Installing git"
     sudo apt update --yes
     sudo apt install git --yes
   fi
@@ -282,7 +282,7 @@ install-zsh() {
     #git_clean "${DOTFILES_DIR}" "${DOTFILES_REPO}" "${DOTFILES_BRANCH}"
     error ".dotfiles dir already exists, no new installation"
   else
-    log_task "Cloning '${DOTFILES_REPO}' at branch '${DOTFILES_BRANCH}' to '${DOTFILES_DIR}'"
+    log-task "Cloning '${DOTFILES_REPO}' at branch '${DOTFILES_BRANCH}' to '${DOTFILES_DIR}'"
     git clone --branch "${DOTFILES_BRANCH}" "${DOTFILES_REPO}" "${DOTFILES_DIR}"
   fi
 
