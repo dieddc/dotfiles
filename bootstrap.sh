@@ -176,7 +176,7 @@ check-user() {
         echo -e $red" USER ID 1000 is occupied"$clear
         exit 0
       fi    
-      add-user $USERNAME
+      add-user
     else  
       echo -e $red" Please start as ROOT for adding the user $USERNAME"$clear
       exit 0
@@ -185,13 +185,12 @@ check-user() {
 }
 
 add-user() {
-  USERNAME=${1%/}
   # Adding group with same name as user
   groupadd --gid 1000 ${USERNAME}
   # Adding user and create home dir
   useradd --uid 1000 --gid ${USERNAME} --shell /bin/bash --create-home ${USERNAME}
   # add empty password to user
-  passwd -d ${USERNAME}
+  # passwd -d ${USERNAME}
   # Give user sudo rights
   echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME}
   chmod 0440 /etc/sudoers.d/${USERNAME}      
@@ -247,7 +246,7 @@ install-zsh() {
   fi  
 
   # Change shell of user
-  sudo usermod --shell /bin/bash $USERNAME
+  sudo usermod --shell /bin/zsh $USERNAME
 
   clear
   log-task "Zsh, Oh-my-zsh and Chezmoi dotfiles are installed"
