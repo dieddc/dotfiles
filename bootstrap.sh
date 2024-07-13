@@ -182,10 +182,7 @@ add-user() {
   echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME}
   chmod 0440 /etc/sudoers.d/${USERNAME}      
   # Adding a password for the user
-  echo -e $green" Please add a password for user $USERNAME..."$clear
-  passwd ${USERNAME}
-  # We need to restart as user
-  echo -e $green" Restart session as user $USERNAME"$clear
+  echo -e $green" Please add a password for user 'passwd $USERNAME' and restart session."$clear
   exit 0
 }
 
