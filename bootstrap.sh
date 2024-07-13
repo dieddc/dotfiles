@@ -237,6 +237,21 @@ install-python() {
 
 }
 
+# Replacing sudo command for pre cheking if all is OK
+sudo() {
+  # shellcheck disable=SC2312
+  if [ "$(id -u)" -eq 0 ]; then
+    "$@"
+  else
+    if ! command sudo --non-interactive true 2>/dev/null; then
+      log_manual_action "Root privileges are required, please enter your password below"
+      command sudo --validate
+    fi
+    command sudo "$@"
+  fi
+}
+
+
 install-zsh() {
 
   if ! command -v zsh &> /dev/null
@@ -248,8 +263,31 @@ install-zsh() {
   # Change shell of user
   sudo usermod --shell /bin/zsh $USERNAME
 
+  # Install OH-MY-ZSH
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+  DOTFILES_REPO_HOST=${DOTFILES_REPO_HOST:-"https://github.com"}
+  DOTFILES_USER=${DOTFILES_USER:-"dieddc"}
+  DOTFILES_REPO="${DOTFILES_REPO_HOST}/${DOTFILES_USER}/dotfiles"
+  DOTFILES_BRANCH=${DOTFILES_BRANCH:-"master"}
+  DOTFILES_DIR="${HOME}/.dotfiles"
+
+  if ! command -v git >/dev/null 2>&1; then
+    log_task "Installing git"
+    sudo apt update --yes
+    sudo apt install git --yes
+  fi
+
+  if [ -d "${DOTFILES_DIR}" ]; then
+    #git_clean "${DOTFILES_DIR}" "${DOTFILES_REPO}" "${DOTFILES_BRANCH}"
+    error ".dotfiles dir already exists, no new installation"
+  else
+    log_task "Cloning '${DOTFILES_REPO}' at branch '${DOTFILES_BRANCH}' to '${DOTFILES_DIR}'"
+    git clone --branch "${DOTFILES_BRANCH}" "${DOTFILES_REPO}" "${DOTFILES_DIR}"
+  fi
+
   clear
-  log-task "Zsh, Oh-my-zsh and Chezmoi dotfiles are installed"
+  log-task "Zsh, Oh-my-zsh and Chezmoi dotfiles are installed, please restart session for activating the shell"
   wait-for-key
 
 }
