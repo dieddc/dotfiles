@@ -9,11 +9,13 @@
   - name: Creating the local group
     ansible.builtin.group:
       name: "{{ username }}"  
+      gid: 1000
 
   - name: Create user
     ansible.builtin.user:
       name: "{{ username }}"  
-      group: "{{ username }}"  
+      group: "{{ username }}" 
+      uid: 1000 
       shell: /bin/bash
       home: /home/{{username}}
       create_home: true

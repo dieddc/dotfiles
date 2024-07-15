@@ -1,0 +1,28 @@
+# These apt packages will be installed or upgraded
+apt_packages:
+  - ansible               # Automation tool
+  - build-essential       # Developer tools and libraries
+  # - cifs-utils            # Utilities for mounting and managing CIFS shares
+  # - code                  # Visual Studio Code
+  - curl                  # Command-line tool for transferring data with URLs
+  - fzf                   # Fuzzy finder for the terminal
+  # - gimp                  # GNU Image Manipulation Program
+  - git                   # Version control system
+  - htop                  # Interactive process viewer
+  - jq                    # Command-line JSON processor
+  # - lynx                  # Text-based web browser
+  - neofetch              # System information and ASCII art
+  # - nfs-common            # Network File System utilities
+  # - ngrok                 # Secure introspectable tunnels to localhost
+  # - python3-dev           # Python 3 development headers
+  # - python3-pip           # Python package installer
+  # - python3-setuptools    # Python package development and distribution utilities
+  # - ranger                # Console file manager
+  - ripgrep               # Line-oriented search tool
+  - rsync                 # Remote file synchronization
+  # - thefuck               # Magnificent app which corrects your previous console command
+  # - timeshift             # System restore utility for Linux
+  - tldr                  # Simplified and community-driven man pages
+  # - tmux                  # Terminal multiplexer
+  - tree                  # Display directories as trees
+  - zsh                   # Zsh shell and environment

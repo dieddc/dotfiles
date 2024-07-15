@@ -1,0 +1,17 @@
+---
+- name: Deploy development tools for ubuntu
+  hosts: all
+  remote_user: dev
+  become: true
+
+  tasks:
+    - name: Include variables from variables/default.yml
+      ansible.builtin.include_vars:
+        file: ../variables/default.yml
+
+- import_playbook: install-apt-packages.yml
+# - import_playbook: set-zsh-as-default-shell.yml
+# - import_playbook: install-flatpaks.yml
+# - import_playbook: symlink-dot-files.yml
+# - import_playbook: oh-my-zsh.yml
+# - import_playbook: install-docker.yml

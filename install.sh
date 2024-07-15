@@ -8,17 +8,19 @@ IFS=$'\n\t'
 # not need to use sudo. If not, then we do need to use sudo.
 if [ "$(id -u)" = "0" ]; then
     SUDO=""
+    apt-get update
+    apt-get install --no-install-recommends -y sudo
 else
     SUDO="sudo"
+    sudo apt-get update
 fi
 
 # Check if Ansible is installed
 if ! command -v ansible &> /dev/null; then
     echo "Ansible is not installed. Installing Ansible..."
-
     $SUDO apt-get update
     $SUDO apt-get install ansible -y
-
+    $SUDO ansible-galaxy collection install community.general    
     echo "Ansible has been installed."
 else
     echo "Ansible is already installed."
