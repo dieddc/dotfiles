@@ -1,69 +1,31 @@
-#!/bin/sh
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
 
-# -e: exit on error
-# -u: exit on unset variables
-set -eu
+# Installs any and all dependencies required to get the toolbox install.sh script to work
 
-log_color() {
-  color_code="$1"
-  shift
-
-  printf "\033[${color_code}m%s\033[0m\n" "$*" >&2
-}
-
-log_red() {
-  log_color "0;31" "$@"
-}
-
-log_blue() {
-  log_color "0;34" "$@"
-}
-
-log_task() {
-  log_blue "🔃" "$@"
-}
-
-log_error() {
-  log_red "❌" "$@"
-}
-
-error() {
-  log_error "$@"
-  exit 1
-}
-
-if ! chezmoi="$(command -v chezmoi)"; then
-  bin_dir="${HOME}/.local/bin"
-  chezmoi="${bin_dir}/chezmoi"
-  log_task "Installing chezmoi to '${chezmoi}'"
-  if command -v curl >/dev/null; then
-    chezmoi_install_script="$(curl -fsSL https://get.chezmoi.io)"
-  elif command -v wget >/dev/null; then
-    chezmoi_install_script="$(wget -qO- https://get.chezmoi.io)"
-  else
-    error "To install chezmoi, you must have curl or wget."
-  fi
-  sh -c "${chezmoi_install_script}" -- -b "${bin_dir}"
-  unset chezmoi_install_script bin_dir
-fi
-
-# POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188
-# shellcheck disable=SC2312
-script_dir="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
-
-set -- init --source="${script_dir}" --verbose=false
-
-if [ -n "${DOTFILES_ONE_SHOT-}" ]; then
-  # see https://www.chezmoi.io/reference/commands/init/#-one-shot
-  set -- "$@" --one-shot
+# Check if the script is running as root (in a Docker container). If so, we do
+# not need to use sudo. If not, then we do need to use sudo.
+if [ "$(id -u)" = "0" ]; then
+    SUDO=""
 else
-  set -- "$@" --apply
+    SUDO="sudo"
 fi
 
-if [ -n "${DOTFILES_DEBUG-}" ]; then
-  set -- "$@" --debug
+# Check if Ansible is installed
+if ! command -v ansible &> /dev/null; then
+    echo "Ansible is not installed. Installing Ansible..."
+
+    $SUDO apt-get update
+    $SUDO apt-get install ansible -y
+
+    echo "Ansible has been installed."
+else
+    echo "Ansible is already installed."
 fi
 
-log_task "Running 'chezmoi $*'"
-# replace current process with chezmoi
-exec "${chezmoi}" "$@"
+echo "╔════════════════════════════════════════════════════════════╗"
+echo "║                                                            ║"
+echo "║ You should be good to run ansible now                      ║"
+echo "║                                                            ║"
+echo "╚════════════════════════════════════════════════════════════╝"

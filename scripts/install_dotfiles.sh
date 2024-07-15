@@ -90,5 +90,6 @@ else
   error "No install script found in the dotfiles."
 fi
 
+
 log_task "Running '${INSTALL_SCRIPT}'"
 exec "${INSTALL_SCRIPT}"

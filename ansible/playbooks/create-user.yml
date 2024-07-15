@@ -1,0 +1,43 @@
+---
+- name: Initial configuration, needed before others will work
+  hosts: all
+  become: true
+  vars:
+    username: dev
+
+  tasks:
+  - name: Creating the local group
+    ansible.builtin.group:
+      name: "{{ username }}"  
+
+  - name: Create user
+    ansible.builtin.user:
+      name: {{username}}
+      group: {{username}}
+      shell: /bin/bash
+      home: /home/{{username}}
+      create_home: true
+      # password: "{{lookup('ansible.builtin.file', 'configs/sysadmin_user_password')}}"
+
+  - name: Set home permissions
+    ansible.builtin.file:
+      path: /home/{{username}}
+      owner: {{username}}
+      group: {{username}}
+      mode: '0700'
+
+  - name: Configure sudo
+    community.general.sudoers:
+      name: {{username}}
+      state: present
+      user: {{username}}
+      commands: ALL
+      nopassword: true
+
+  # - name: Deploy ssh pubkey
+  #   ansible.posix.authorized_key:
+  #     user: {{username}}
+  #     state: present
+  #     exclusive: true
+  #     key: "{{lookup('ansible.builtin.file', 'files/security/sysadmin_pub_key')}}"
+

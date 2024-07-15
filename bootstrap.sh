@@ -100,7 +100,7 @@ splash() {
 menu() {
   echo -ne "
   Install...
-  $(green '1)') Base tools for development
+  $(green '1)') Installation new machine
   $(green '2)') Zsh shell and dotfiles (chezmoi)
   $(green '3)') Pnpm & Node
   $(green '4)') Popular Bin Installs
@@ -195,7 +195,9 @@ add-user() {
   echo "${USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME}
   chmod 0440 /etc/sudoers.d/${USERNAME}      
   # Adding a password for the user
-  echo -e $green" Please add a password for user 'passwd $USERNAME' and restart session."$clear
+  echo -e $green"User has been created with empty password."$clear
+  echo -e $green"You can add a password with 'passwd $USERNAME'."$clear
+  echo -e $green"Restart session and logon as user $USERNAME."$clear
   exit 0
 }
 
@@ -305,6 +307,8 @@ install-zsh() {
     git clone --depth=1 https://github.com/zsh-users/zsh-completions ~/oh-my-zsh/custom/plugins/zsh-completions
   fi
 
+  cp ~/.dotfiles/dev/honukai.zsh-theme ~/oh-my-zsh/custom/themes/honukai.zsh-theme
+
   log-task "Zsh, Oh-my-zsh and Chezmoi dotfiles are installed, please restart session for activating the shell"
 
   wait-for-key
@@ -313,8 +317,8 @@ install-zsh() {
 
 # Starting
 USERNAME=dev
+
 clear
 splash
-check-user
 menu
 

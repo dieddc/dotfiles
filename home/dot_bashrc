@@ -14,10 +14,6 @@ shopt -s checkwinsize    # check the window size after each command and, if nece
 
 test -r ~/.commonrc && . ~/.commonrc
 
-
-
-
-
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
