@@ -12,8 +12,8 @@
 
   - name: Create user
     ansible.builtin.user:
-      name: {{username}}
-      group: {{username}}
+      name: "{{ username }}"  
+      group: "{{ username }}"  
       shell: /bin/bash
       home: /home/{{username}}
       create_home: true
@@ -22,15 +22,15 @@
   - name: Set home permissions
     ansible.builtin.file:
       path: /home/{{username}}
-      owner: {{username}}
-      group: {{username}}
+      owner: "{{ username }}"  
+      group: "{{ username }}"  
       mode: '0700'
 
   - name: Configure sudo
     community.general.sudoers:
-      name: {{username}}
+      name: "{{ username }}"  
       state: present
-      user: {{username}}
+      user: "{{ username }}"  
       commands: ALL
       nopassword: true
 
